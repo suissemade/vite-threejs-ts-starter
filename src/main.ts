@@ -36,10 +36,11 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(5 / size, 7 / size, 7 / size);
+    model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale to make model visible
+    model.rotation.x = -Math.PI / 2; // Fix orientation
 
     // Set initial camera position
-    camera.position.set(size * 5, size * 5, size * 5);
+    camera.position.set(size * 2, size * 2, size * 2);
     camera.lookAt(center);
 
     console.log('Model Loaded:', model); // Debugging
@@ -56,54 +57,23 @@ function addLabel(text: string, position: THREE.Vector3) {
     scene.add(label);
 }
 
-// Scroll Hijacking Variables
-let currentStep = 0;
-const totalSteps = 100;
+// Scroll Interaction
+window.addEventListener('scroll', () => {
+    if (!model) return;
 
-// Hijack Scroll and Control Animation
-window.addEventListener('wheel', (event) => {
-    event.preventDefault();
-    console.log('Wheel event triggered', event.deltaY); // Debugging
+    // Get scroll percentage
+    const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
 
-    if (!model) {
-        console.log('Model not loaded yet');
-        return;
-    }
-
-    const delta = Math.sign(event.deltaY); // Scroll direction
-    if (delta > 0 && currentStep < totalSteps) {
-        currentStep++;
-        animateScroll(currentStep / totalSteps);
-    } else if (delta < 0 && currentStep > 0) {
-        currentStep--;
-        animateScroll(currentStep / totalSteps);
-    }
-}, { passive: false });
-
-// Animate Camera and Model Based on Progress
-function animateScroll(progress: number) {
-    console.log('Animating Scroll Progress:', progress); // Debugging
-
+    // Zoom and rotate
     const minDistance = 5;
     const maxDistance = 20;
-    const distance = minDistance + (maxDistance - minDistance) * (1 - progress);
+    const distance = minDistance + (maxDistance - minDistance) * (1 - scrollPercentage);
 
-    // Update camera position
-    camera.position.set(distance, distance, distance);
-    console.log('Camera Position:', camera.position); // Debugging
+    camera.position.set(distance, distance, distance); // Adjust camera zoom
+    camera.lookAt(new THREE.Vector3(0, 0, 0)); // Always look at the center of the scene
 
-    // Rotate the model
-    if (model) {
-        model.rotation.y = progress * Math.PI * 2;
-        console.log('Model Rotation Y:', model.rotation.y); // Debugging
-    }
-
-    // Focus on model center
-    const box = new THREE.Box3().setFromObject(model);
-    const center = box.getCenter(new THREE.Vector3());
-    camera.lookAt(center);
-    console.log('Camera LookAt Center:', center); // Debugging
-}
+    model.rotation.y = scrollPercentage * Math.PI * 2; // Rotate model smoothly
+});
 
 // Animation Loop
 function animate() {
@@ -112,3 +82,11 @@ function animate() {
     labelRenderer.render(scene, camera);
 }
 animate();
+
+// Handle Window Resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+});
