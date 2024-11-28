@@ -17,10 +17,10 @@ labelRenderer.domElement.style.top = '0px';
 document.body.appendChild(labelRenderer.domElement);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // General illumination
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Directional light
 directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
 
@@ -36,7 +36,7 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(5 / size, 5 / size, 5 / size); // Larger scaling for better visibility
+    model.scale.set(5 / size, 5 / size, 5 / size); // Larger scaling for visibility
 
     // Set initial camera position
     camera.position.set(size * 2, size * 2, size * 2);
@@ -79,14 +79,20 @@ window.addEventListener('scroll', () => {
     const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
 
     if (model) {
-        // Zoom in/out smoothly
-        const distance = 10 - scrollPercentage * 5; // Adjust zoom range
+        // Define zoom boundaries
+        const minDistance = 5; // Closer view
+        const maxDistance = 20; // Farther view
+        const distance = minDistance + (maxDistance - minDistance) * (1 - scrollPercentage);
+
+        // Update camera position
         camera.position.set(distance, distance, distance);
 
-        // Rotate the model based on scroll
+        // Smooth rotation of the model
         model.rotation.y = scrollPercentage * Math.PI * 2;
 
-        // Focus on the model's center
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        // Ensure the camera always looks at the center of the model
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        camera.lookAt(center);
     }
 });
