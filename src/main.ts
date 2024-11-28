@@ -58,6 +58,46 @@ function addLabel(text: string, position: THREE.Vector3) {
     scene.add(label);
 }
 
+// Scroll Hijacking Variables
+let currentStep = 0;
+const totalSteps = 100;
+
+// Hijack Scroll and Control Animation
+window.addEventListener('wheel', (event) => {
+    event.preventDefault();
+
+    if (!model) return;
+
+    const delta = Math.sign(event.deltaY); // Scroll direction
+    if (delta > 0 && currentStep < totalSteps) {
+        currentStep++;
+        animateScroll(currentStep / totalSteps);
+    } else if (delta < 0 && currentStep > 0) {
+        currentStep--;
+        animateScroll(currentStep / totalSteps);
+    }
+}, { passive: false });
+
+// Animate Camera and Model Based on Progress
+function animateScroll(progress: number) {
+    const minDistance = 5;
+    const maxDistance = 20;
+    const distance = minDistance + (maxDistance - minDistance) * (1 - progress);
+
+    // Update camera position
+    camera.position.set(distance, distance, distance);
+
+    // Rotate the model
+    if (model) {
+        model.rotation.y = progress * Math.PI * 2;
+    }
+
+    // Focus on model center
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    camera.lookAt(center);
+}
+
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate);
@@ -65,36 +105,3 @@ function animate() {
     labelRenderer.render(scene, camera);
 }
 animate();
-
-// Handle Window Resize
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    labelRenderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// Scroll-Based Animation
-window.addEventListener('scroll', () => {
-    const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-
-    if (model) {
-        console.log('Scroll percentage:', scrollPercentage); // Debug
-
-        // Define zoom boundaries
-        const minDistance = 5;
-        const maxDistance = 20;
-        const distance = minDistance + (maxDistance - minDistance) * (1 - scrollPercentage);
-
-        // Update camera position
-        camera.position.set(distance, distance, distance);
-
-        // Smooth rotation of the model
-        model.rotation.y = scrollPercentage * Math.PI * 2;
-
-        // Always look at the model center
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        camera.lookAt(center);
-    }
-});
