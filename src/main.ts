@@ -42,9 +42,7 @@ loader.load('/model.glb', (gltf) => {
     camera.position.set(size * 2, size * 2, size * 2);
     camera.lookAt(center);
 
-    // Add Labels
-    addLabel('Feature 1', new THREE.Vector3(0, 1, 0));
-    addLabel('Feature 2', new THREE.Vector3(1, -1, 0));
+    console.log('Model Loaded:', model); // Debugging
 });
 
 // Add Text Labels
@@ -65,8 +63,12 @@ const totalSteps = 100;
 // Hijack Scroll and Control Animation
 window.addEventListener('wheel', (event) => {
     event.preventDefault();
+    console.log('Wheel event triggered', event.deltaY); // Debugging
 
-    if (!model) return;
+    if (!model) {
+        console.log('Model not loaded yet');
+        return;
+    }
 
     const delta = Math.sign(event.deltaY); // Scroll direction
     if (delta > 0 && currentStep < totalSteps) {
@@ -80,22 +82,27 @@ window.addEventListener('wheel', (event) => {
 
 // Animate Camera and Model Based on Progress
 function animateScroll(progress: number) {
+    console.log('Animating Scroll Progress:', progress); // Debugging
+
     const minDistance = 5;
     const maxDistance = 20;
     const distance = minDistance + (maxDistance - minDistance) * (1 - progress);
 
     // Update camera position
     camera.position.set(distance, distance, distance);
+    console.log('Camera Position:', camera.position); // Debugging
 
     // Rotate the model
     if (model) {
         model.rotation.y = progress * Math.PI * 2;
+        console.log('Model Rotation Y:', model.rotation.y); // Debugging
     }
 
     // Focus on model center
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     camera.lookAt(center);
+    console.log('Camera LookAt Center:', center); // Debugging
 }
 
 // Animation Loop
