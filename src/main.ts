@@ -75,19 +75,18 @@ window.addEventListener('resize', () => {
 });
 
 // Scroll-Based Animation
-let scrollY = 0;
 window.addEventListener('scroll', () => {
     const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+
     if (model) {
-        // Zoom in or out smoothly
-        const distance = 10 - scrollPercentage * 7; // Adjust zoom range
+        // Zoom in/out smoothly
+        const distance = 10 - scrollPercentage * 5; // Adjust zoom range
         camera.position.set(distance, distance, distance);
 
         // Rotate the model based on scroll
         model.rotation.y = scrollPercentage * Math.PI * 2;
 
-        // Focus on a specific part (optional)
-        const targetPosition = new THREE.Vector3(0, scrollPercentage * 2 - 1, 0); // Smoothly scrolls focus
-        camera.lookAt(targetPosition);
+        // Focus on the model's center
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
 });
