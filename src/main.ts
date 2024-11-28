@@ -1,8 +1,5 @@
-window.addEventListener('scroll', () => {
-    console.log('Scroll event triggered');
-    if (model) {
-        console.log('Model exists:', model);
-    } else {
-        console.log('Model is not loaded yet');
-    }
-});
+if (model) {
+    const distance = 10 - window.scrollY * 0.01; // Example zoom logic
+    console.log('Camera Position:', camera.position);
+    console.log('Model Position:', model.position);
+}
