@@ -17,15 +17,15 @@ labelRenderer.domElement.style.top = '0px';
 document.body.appendChild(labelRenderer.domElement);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // General illumination
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Directional light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
 directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
 
 // Load the 3D Model
-let model: THREE.Object3D;
+let model: THREE.Object3D | undefined;
 const loader = new GLTFLoader();
 loader.load('/model.glb', (gltf) => {
     model = gltf.scene;
@@ -36,7 +36,7 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(5 / size, 5 / size, 5 / size); // Larger scaling for visibility
+    model.scale.set(5 / size, 5 / size, 5 / size);
 
     // Set initial camera position
     camera.position.set(size * 2, size * 2, size * 2);
@@ -79,9 +79,11 @@ window.addEventListener('scroll', () => {
     const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
 
     if (model) {
+        console.log('Scroll percentage:', scrollPercentage); // Debug
+
         // Define zoom boundaries
-        const minDistance = 5; // Closer view
-        const maxDistance = 20; // Farther view
+        const minDistance = 5;
+        const maxDistance = 20;
         const distance = minDistance + (maxDistance - minDistance) * (1 - scrollPercentage);
 
         // Update camera position
@@ -90,7 +92,7 @@ window.addEventListener('scroll', () => {
         // Smooth rotation of the model
         model.rotation.y = scrollPercentage * Math.PI * 2;
 
-        // Ensure the camera always looks at the center of the model
+        // Always look at the model center
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         camera.lookAt(center);
