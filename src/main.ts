@@ -17,10 +17,10 @@ labelRenderer.domElement.style.top = '0px';
 document.body.appendChild(labelRenderer.domElement);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // General illumination
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Directional lighting
 directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
 
@@ -36,24 +36,29 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale to make model visible
-    model.rotation.x = -Math.PI / 2; // Fix orientation
+    model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale for visibility
+    model.rotation.x = -Math.PI / 2; // Fix orientation if necessary
 
     // Set initial camera position
     camera.position.set(size * 2, size * 2, size * 2);
     camera.lookAt(center);
 
+    // Add Labels
+    addLabel('Feature 1', new THREE.Vector3(0, 1, 0)); // Label near the top
+    addLabel('Feature 2', new THREE.Vector3(1, -1, 0)); // Label near the side
+    addLabel('Feature 3', new THREE.Vector3(-1, 0.5, 0)); // Label near another point
+
     console.log('Model Loaded:', model); // Debugging
 });
 
-// Add Text Labels
+// Add Text Labels Function
 function addLabel(text: string, position: THREE.Vector3) {
     const div = document.createElement('div');
     div.className = 'label';
     div.textContent = text;
-    div.style.marginTop = '-1em';
+    div.style.marginTop = '-1em'; // Adjust label positioning
     const label = new CSS2DObject(div);
-    label.position.copy(position);
+    label.position.copy(position); // Attach label to a 3D position
     scene.add(label);
 }
 
