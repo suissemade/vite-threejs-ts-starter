@@ -6,18 +6,19 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>vite-threejs-ts-starter</title>
 		<style>
-    html, body {
-    overflow: hidden;
-    height: 100%; /* Ensure the content doesn't move on scroll */
+    hhtml, body {
+    height: 200vh; /* Makes the page scrollable */
     margin: 0;
+    overflow: auto;
 }
-			.label {
+
+.label {
     color: white;
     background: rgba(0, 0, 0, 0.7);
     padding: 5px;
     border-radius: 5px;
     font-size: 14px;
-    pointer-events: none;
+    pointer-events: none; /* Prevent mouse interactions */
     text-align: center;
 }
 </style>
