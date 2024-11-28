@@ -1,17 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
-
-// Ambient Light for overall illumination
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Adjust intensity
-scene.add(ambientLight);
-
-// Directional Light for focus and shadows
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Brighter intensity
-directionalLight.position.set(10, 10, 10);
-scene.add(directionalLight);
-
 
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
@@ -26,11 +15,6 @@ labelRenderer.setSize(window.innerWidth, window.innerHeight);
 labelRenderer.domElement.style.position = 'absolute';
 labelRenderer.domElement.style.top = '0px';
 document.body.appendChild(labelRenderer.domElement);
-
-// OrbitControls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
 
 // Lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -51,17 +35,16 @@ loader.load('/model.glb', (gltf) => {
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
-    model.position.sub(center);
-    model.scale.set(2 / size, 2 / size, 2 / size);
+    model.position.sub(center); // Center the model
+    model.scale.set(5 / size, 5 / size, 5 / size); // Larger scaling for better visibility
 
-    // Initial Camera Position
-    const distance = size * 3.5;
-    camera.position.set(distance, distance, distance);
+    // Set initial camera position
+    camera.position.set(size * 2, size * 2, size * 2);
     camera.lookAt(center);
 
     // Add Labels
-    addLabel('Part A', new THREE.Vector3(0, 1, 0));
-    addLabel('Part B', new THREE.Vector3(1, -1, 0));
+    addLabel('Feature 1', new THREE.Vector3(0, 1, 0));
+    addLabel('Feature 2', new THREE.Vector3(1, -1, 0));
 });
 
 // Add Text Labels
@@ -78,7 +61,6 @@ function addLabel(text: string, position: THREE.Vector3) {
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
 }
@@ -95,14 +77,17 @@ window.addEventListener('resize', () => {
 // Scroll-Based Animation
 let scrollY = 0;
 window.addEventListener('scroll', () => {
-    const scrollPercentage = window.scrollY / document.body.scrollHeight;
+    const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
     if (model) {
-        // Zoom based on scroll
-        const distance = 10 - scrollPercentage * 5; // Adjust zoom range
+        // Zoom in or out smoothly
+        const distance = 10 - scrollPercentage * 7; // Adjust zoom range
         camera.position.set(distance, distance, distance);
-        camera.lookAt(model.position);
 
-        // Rotate model on scroll
+        // Rotate the model based on scroll
         model.rotation.y = scrollPercentage * Math.PI * 2;
+
+        // Focus on a specific part (optional)
+        const targetPosition = new THREE.Vector3(0, scrollPercentage * 2 - 1, 0); // Smoothly scrolls focus
+        camera.lookAt(targetPosition);
     }
 });
