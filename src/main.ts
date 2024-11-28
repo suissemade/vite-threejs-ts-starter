@@ -3,6 +3,16 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
+// Ambient Light for overall illumination
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Adjust intensity
+scene.add(ambientLight);
+
+// Directional Light for focus and shadows
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Brighter intensity
+directionalLight.position.set(10, 10, 10);
+scene.add(directionalLight);
+
+
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
