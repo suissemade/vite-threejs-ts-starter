@@ -55,7 +55,7 @@ loader.load('/model.glb', (gltf) => {
     model.scale.set(2 / size, 2 / size, 2 / size);
 
     // Initial Camera Position
-    const distance = size * 1.5;
+    const distance = size * 3.5;
     camera.position.set(distance, distance, distance);
     camera.lookAt(center);
 
