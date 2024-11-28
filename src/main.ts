@@ -36,10 +36,10 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(5 / size, 5 / size, 5 / size);
+    model.scale.set(5 / size, 7 / size, 7 / size);
 
     // Set initial camera position
-    camera.position.set(size * 2, size * 2, size * 2);
+    camera.position.set(size * 5, size * 5, size * 5);
     camera.lookAt(center);
 
     console.log('Model Loaded:', model); // Debugging
