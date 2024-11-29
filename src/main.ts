@@ -28,11 +28,11 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center);
-    model.scale.set(105 / size,105 / size, 105 / size);
+    model.scale.set(10 / size,10 / size, 10 / size);
 
     // Apply custom rotation to ensure model is upright
-    model.rotation.x = THREE.MathUtils.degToRad(10); // Convert degrees to radians
-    model.rotation.z = THREE.MathUtils.degToRad(10);
+    model.rotation.x = THREE.MathUtils.degToRad(200); // Convert degrees to radians
+    model.rotation.z = THREE.MathUtils.degToRad(200);
 
     // Position the camera
     const cameraDistance = size * 2.5;
