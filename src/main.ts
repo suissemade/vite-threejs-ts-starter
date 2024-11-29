@@ -31,7 +31,7 @@ loader.load('/model.glb', (gltf) => {
     model.scale.set(10 / size, 10 / size, 10 / size); // Scale the model
 
     // Rotate the model to correct orientation (adjust as needed)
-    model.rotation.set(-Math.PI / 8, 3, 0); // Example: Rotate 90° around X-axis to align wheels at the bottom
+    model.rotation.set(-Math.PI / 8, 3, 0); // Adjust orientation if needed
 
     // Position the camera to view the entire model
     const cameraDistance = size * 6.5;
@@ -41,13 +41,13 @@ loader.load('/model.glb', (gltf) => {
     console.log('Model Loaded and Oriented:', model);
 });
 
-// Restrict Rotation to Horizontal Only
+// Restrict Rotation to Vertical Only (Up-Down)
 let isDragging = false;
-let previousMousePosition = { x: 0 };
+let previousMousePosition = { y: 0 };
 
 window.addEventListener('mousedown', (event) => {
     isDragging = true;
-    previousMousePosition.x = event.clientX;
+    previousMousePosition.y = event.clientY; // Track Y-axis
 });
 
 window.addEventListener('mouseup', () => {
@@ -57,12 +57,12 @@ window.addEventListener('mouseup', () => {
 window.addEventListener('mousemove', (event) => {
     if (!isDragging || !model) return;
 
-    const deltaX = event.clientX - previousMousePosition.x;
+    const deltaY = event.clientY - previousMousePosition.y;
 
-    // Rotate the model only along the Y-axis for horizontal movement
-    model.rotation.y += deltaX * 0.01; // Adjust sensitivity as needed
+    // Rotate the model only along the X-axis for up-down movement
+    model.rotation.x += deltaY * 0.01; // Adjust sensitivity as needed
 
-    previousMousePosition.x = event.clientX;
+    previousMousePosition.y = event.clientY;
 });
 
 // Animation Loop
