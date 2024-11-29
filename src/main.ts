@@ -31,8 +31,8 @@ loader.load('/model.glb', (gltf) => {
     model.scale.set(105 / size,105 / size, 105 / size);
 
     // Apply custom rotation to ensure model is upright
-    model.rotation.x = THREE.MathUtils.degToRad(110); // Convert degrees to radians
-    model.rotation.z = THREE.MathUtils.degToRad(110);
+    model.rotation.x = THREE.MathUtils.degToRad(10); // Convert degrees to radians
+    model.rotation.z = THREE.MathUtils.degToRad(10);
 
     // Position the camera
     const cameraDistance = size * 2.5;
