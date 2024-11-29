@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
@@ -8,13 +7,6 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
-// CSS2DRenderer for Text Annotations
-const labelRenderer = new CSS2DRenderer();
-labelRenderer.setSize(window.innerWidth, window.innerHeight);
-labelRenderer.domElement.style.position = 'absolute';
-labelRenderer.domElement.style.top = '0px';
-document.body.appendChild(labelRenderer.domElement);
 
 // Lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // General illumination
@@ -37,54 +29,38 @@ loader.load('/model.glb', (gltf) => {
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
     model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale for visibility
-    model.rotation.x = -Math.PI / 2; // Fix orientation if necessary
-
-    // Set initial camera position
-    camera.position.set(size * 2, size * 2, size * 2);
-    camera.lookAt(center);
-
-    // Add Labels
-    addLabel('Feature 1', new THREE.Vector3(0, 1, 0)); // Label near the top
-    addLabel('Feature 2', new THREE.Vector3(1, -1, 0)); // Label near the side
-    addLabel('Feature 3', new THREE.Vector3(-1, 0.5, 0)); // Label near another point
 
     console.log('Model Loaded:', model); // Debugging
 });
 
-// Add Text Labels Function
-function addLabel(text: string, position: THREE.Vector3) {
-    const div = document.createElement('div');
-    div.className = 'label';
-    div.textContent = text;
-    div.style.marginTop = '-1em'; // Adjust label positioning
-    const label = new CSS2DObject(div);
-    label.position.copy(position); // Attach label to a 3D position
-    scene.add(label);
-}
+// Restrict Camera Rotation to Horizontal Only
+let isDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
 
-// Scroll Interaction
-window.addEventListener('scroll', () => {
-    if (!model) return;
+window.addEventListener('mousedown', (event) => {
+    isDragging = true;
+    previousMousePosition.x = event.clientX;
+});
 
-    // Get scroll percentage
-    const scrollPercentage = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+window.addEventListener('mouseup', () => {
+    isDragging = false;
+});
 
-    // Zoom and rotate
-    const minDistance = 5;
-    const maxDistance = 20;
-    const distance = minDistance + (maxDistance - minDistance) * (1 - scrollPercentage);
+window.addEventListener('mousemove', (event) => {
+    if (!isDragging || !model) return;
 
-    camera.position.set(distance, distance, distance); // Adjust camera zoom
-    camera.lookAt(new THREE.Vector3(0, 0, 0)); // Always look at the center of the scene
+    const deltaX = event.clientX - previousMousePosition.x;
 
-    model.rotation.y = scrollPercentage * Math.PI * 2; // Rotate model smoothly
+    // Rotate model only along the Y-axis (left-right)
+    model.rotation.y += deltaX * 0.01;
+
+    previousMousePosition.x = event.clientX;
 });
 
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    labelRenderer.render(scene, camera);
 }
 animate();
 
@@ -93,5 +69,4 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
