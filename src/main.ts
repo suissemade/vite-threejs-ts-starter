@@ -27,22 +27,20 @@ loader.load('/model.glb', (gltf) => {
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
-    model.position.sub(center);
-    model.scale.set(10 / size,10 / size, 10 / size);
+    model.position.sub(center); // Center the model
+    model.scale.set(10 / size, 10 / size, 10 / size); // Scale to a reasonable size
 
-    // Apply custom rotation to ensure model is upright
-    model.rotation.x = THREE.MathUtils.degToRad(200); // Convert degrees to radians
-    model.rotation.z = THREE.MathUtils.degToRad(200);
-
-    // Position the camera
-    const cameraDistance = size * 2.5;
-    camera.position.set(cameraDistance, cameraDistance / 3, cameraDistance);
-    camera.lookAt(0, 0, 0);
-
+    // Ensure the model is upright
+    model.rotation.set(0, 0, 0); // Reset rotation to upright
     console.log('Model Loaded:', model);
+
+    // Position the camera to fit the model
+    const cameraDistance = size * 2.5;
+    camera.position.set(0, size, cameraDistance); // Slightly above and back
+    camera.lookAt(0, 0, 0); // Center camera on the model
 });
 
-// Restrict Rotation to Left-Right (Compensating for Initial Rotation)
+// Restrict Rotation to Horizontal Only
 let isDragging = false;
 let previousMousePosition = { x: 0 };
 
@@ -60,9 +58,8 @@ window.addEventListener('mousemove', (event) => {
 
     const deltaX = event.clientX - previousMousePosition.x;
 
-    // Adjust rotation based on the current orientation
-    const rotationAdjustment = 0.01; // Sensitivity of rotation
-    model.rotation.y += deltaX * rotationAdjustment;
+    // Rotate the model only along the Y-axis for horizontal movement
+    model.rotation.y += deltaX * 0.01; // Adjust sensitivity as needed
 
     previousMousePosition.x = event.clientX;
 });
