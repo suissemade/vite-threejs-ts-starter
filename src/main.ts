@@ -31,10 +31,10 @@ loader.load('/model.glb', (gltf) => {
     model.scale.set(10 / size, 10 / size, 10 / size); // Scale the model
 
     // Rotate the model to correct orientation (adjust as needed)
-    model.rotation.set(-Math.PI / 0, 3, 0); // Example: Rotate 90° around X-axis to align wheels at the bottom
+    model.rotation.set(-Math.PI / 8, 3, 0); // Example: Rotate 90° around X-axis to align wheels at the bottom
 
     // Position the camera to view the entire model
-    const cameraDistance = size * 5.5;
+    const cameraDistance = size * 2.5;
     camera.position.set(0, size, cameraDistance); // Slightly above and back
     camera.lookAt(0, 0, 0);
 
