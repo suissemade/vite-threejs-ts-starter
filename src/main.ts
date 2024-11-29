@@ -28,7 +28,7 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center);
-    model.scale.set(10 / size, 10 / size, 10 / size);
+    model.scale.set(20 / size, 20 / size, 20 / size);
 
     // Apply custom rotation to ensure model is upright
     model.rotation.x = THREE.MathUtils.degToRad(120); // Convert degrees to radians
