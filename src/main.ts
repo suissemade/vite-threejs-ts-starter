@@ -28,16 +28,17 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(10 / size, 10 / size, 10 / size); // Scale to a reasonable size
+    model.scale.set(10 / size, 10 / size, 10 / size); // Scale the model
 
-    // Ensure the model is upright
-    model.rotation.set(0, 0, 0); // Reset rotation to upright
-    console.log('Model Loaded:', model);
+    // Rotate the model to correct orientation (adjust as needed)
+    model.rotation.set(-Math.PI / 2, 0, 0); // Example: Rotate 90° around X-axis to align wheels at the bottom
 
-    // Position the camera to fit the model
+    // Position the camera to view the entire model
     const cameraDistance = size * 2.5;
     camera.position.set(0, size, cameraDistance); // Slightly above and back
-    camera.lookAt(0, 0, 0); // Center camera on the model
+    camera.lookAt(0, 0, 0);
+
+    console.log('Model Loaded and Oriented:', model);
 });
 
 // Restrict Rotation to Horizontal Only
