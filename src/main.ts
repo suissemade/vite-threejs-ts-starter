@@ -31,7 +31,7 @@ loader.load('/model.glb', (gltf) => {
     model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale for visibility
 
     // Ensure model is upright
-    model.rotation.x = 0; // Ensure upright orientation
+    model.rotation.x = 90; // Ensure upright orientation
     model.rotation.z = 0;
 
     // Position the camera to view the entire model
