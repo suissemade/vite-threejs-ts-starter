@@ -30,12 +30,21 @@ loader.load('/model.glb', (gltf) => {
     model.position.sub(center); // Center the model
     model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale for visibility
 
+    // Ensure model is upright
+    model.rotation.x = 0; // Ensure upright orientation
+    model.rotation.z = 0;
+
+    // Position the camera to view the entire model
+    const cameraDistance = size * 2.5; // Adjust the multiplier for further zoom out
+    camera.position.set(cameraDistance, cameraDistance / 3, cameraDistance); // Offset slightly for better view
+    camera.lookAt(0, 0, 0); // Center camera on the model
+
     console.log('Model Loaded:', model); // Debugging
 });
 
 // Restrict Camera Rotation to Horizontal Only
 let isDragging = false;
-let previousMousePosition = { x: 0, y: 0 };
+let previousMousePosition = { x: 0 };
 
 window.addEventListener('mousedown', (event) => {
     isDragging = true;
