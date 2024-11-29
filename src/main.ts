@@ -9,10 +9,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // General illumination
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Directional lighting
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
 directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
 
@@ -27,22 +27,22 @@ loader.load('/model.glb', (gltf) => {
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
-    model.position.sub(center); // Center the model
-    model.scale.set(10 / size, 10 / size, 10 / size); // Adjust scale for visibility
+    model.position.sub(center);
+    model.scale.set(10 / size, 10 / size, 10 / size);
 
-    // Ensure model is upright
-    model.rotation.x = 120; // Ensure upright orientation
-    model.rotation.z = 120;
+    // Apply custom rotation to ensure model is upright
+    model.rotation.x = THREE.MathUtils.degToRad(120); // Convert degrees to radians
+    model.rotation.z = THREE.MathUtils.degToRad(120);
 
-    // Position the camera to view the entire model
-    const cameraDistance = size * 2.5; // Adjust the multiplier for further zoom out
-    camera.position.set(cameraDistance, cameraDistance / 3, cameraDistance); // Offset slightly for better view
-    camera.lookAt(0, 0, 0); // Center camera on the model
+    // Position the camera
+    const cameraDistance = size * 2.5;
+    camera.position.set(cameraDistance, cameraDistance / 3, cameraDistance);
+    camera.lookAt(0, 0, 0);
 
-    console.log('Model Loaded:', model); // Debugging
+    console.log('Model Loaded:', model);
 });
 
-// Restrict Camera Rotation to Horizontal Only
+// Restrict Rotation to Left-Right (Compensating for Initial Rotation)
 let isDragging = false;
 let previousMousePosition = { x: 0 };
 
@@ -60,8 +60,9 @@ window.addEventListener('mousemove', (event) => {
 
     const deltaX = event.clientX - previousMousePosition.x;
 
-    // Rotate model only along the Y-axis (left-right)
-    model.rotation.y += deltaX * 0.01;
+    // Adjust rotation based on the current orientation
+    const rotationAdjustment = 0.01; // Sensitivity of rotation
+    model.rotation.y += deltaX * rotationAdjustment;
 
     previousMousePosition.x = event.clientX;
 });
