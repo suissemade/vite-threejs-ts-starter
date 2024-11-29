@@ -34,7 +34,7 @@ loader.load('/model.glb', (gltf) => {
     model.rotation.set(-Math.PI / 0, 3, 0); // Example: Rotate 90° around X-axis to align wheels at the bottom
 
     // Position the camera to view the entire model
-    const cameraDistance = size * 9.5;
+    const cameraDistance = size * 5.5;
     camera.position.set(0, size, cameraDistance); // Slightly above and back
     camera.lookAt(0, 0, 0);
 
