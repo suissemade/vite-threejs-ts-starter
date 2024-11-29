@@ -28,7 +28,7 @@ loader.load('/model.glb', (gltf) => {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     model.position.sub(center); // Center the model
-    model.scale.set(5 / size, 5 / size, 5 / size); // Adjust scale for visibility
+    model.scale.set(8 / size, 8 / size, 8 / size); // Adjust scale for visibility
 
     // Ensure model is upright
     model.rotation.x = 0; // Ensure upright orientation
