@@ -32,7 +32,7 @@ loader.load('/model.glb', (gltf) => {
 
     // Ensure model is upright
     model.rotation.x = 90; // Ensure upright orientation
-    model.rotation.z = 0;
+    model.rotation.z = 90;
 
     // Position the camera to view the entire model
     const cameraDistance = size * 2.5; // Adjust the multiplier for further zoom out
